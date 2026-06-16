@@ -1,11 +1,11 @@
 import cors from 'cors';
 import express from 'express';
-import mongoose from 'mongoose';
 import Activity from './models/activity.model';
 import Leaderboard from './models/leaderboard.model';
 import Team from './models/team.model';
 import User from './models/user.model';
 import Workout from './models/workout.model';
+import { connectDatabase, mongoUri } from './config/database';
 
 const app = express();
 const port = 8000;
@@ -13,7 +13,6 @@ const isCodespaces = Boolean(process.env.CODESPACE_NAME);
 const apiUrl = isCodespaces
   ? `https://${process.env.CODESPACE_NAME}-8000.githubpreview.dev`
   : `http://localhost:${port}`;
-const mongoUri = process.env.MONGODB_URI ?? 'mongodb://127.0.0.1:27017/octofit_db';
 
 app.use(cors());
 app.use(express.json());
@@ -55,14 +54,12 @@ app.get('/api/workouts', async (_req, res) => {
   res.json({ workouts });
 });
 
-mongoose.set('strictQuery', true);
-
-mongoose
-  .connect(mongoUri)
+connectDatabase()
   .then(() => {
     console.log('Connected to MongoDB');
     app.listen(port, () => {
       console.log(`Backend listening on ${apiUrl}`);
+      console.log(`MongoDB URI: ${mongoUri}`);
     });
   })
   .catch((error) => {
