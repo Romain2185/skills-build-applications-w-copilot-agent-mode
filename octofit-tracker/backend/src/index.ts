@@ -11,7 +11,7 @@ const app = express();
 const port = 8000;
 const isCodespaces = Boolean(process.env.CODESPACE_NAME);
 const apiUrl = isCodespaces
-  ? `https://${process.env.CODESPACE_NAME}-8000.githubpreview.dev`
+  ? `https://${process.env.CODESPACE_NAME}-8000.app.github.dev`
   : `http://localhost:${port}`;
 
 app.use(cors());
